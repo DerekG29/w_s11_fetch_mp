@@ -1,19 +1,26 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const initialForm = { name: '', breed: '', adopted: false }
 
 // Use this form for both POST and PUT requests!
-export default function DogForm() {
-  const [values, setValues] = useState(initialForm)
+export default function DogForm(props) {
+  const { fetchBreeds, breeds } = props;
+  const [values, setValues] = useState(initialForm);
+
+  useEffect(() => {
+    fetchBreeds();
+  }, []);
+
   const onSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
   }
   const onChange = (event) => {
     const { name, value, type, checked } = event.target
     setValues({
       ...values, [name]: type === 'checkbox' ? checked : value
-    })
+    });
   }
+  
   return (
     <div>
       <h2>
@@ -34,7 +41,11 @@ export default function DogForm() {
           aria-label="Dog's breed"
         >
           <option value="">---Select Breed---</option>
-          {/* Populate this dropdown using data obtained from the API */}
+          {breeds?.map((breed, idx)=> {
+            return (
+              <option key={idx} value={breed}>{breed}</option>
+            )
+          })}
         </select>
         <label>
           Adopted: <input
