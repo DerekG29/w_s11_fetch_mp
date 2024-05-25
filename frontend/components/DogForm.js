@@ -1,18 +1,40 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const initialForm = { name: '', breed: '', adopted: false }
 
 // Use this form for both POST and PUT requests!
 export default function DogForm(props) {
-  const { fetchBreeds, breeds } = props;
+  const {
+    fetchBreeds,
+    breeds,
+    editing,
+    dog,
+    createDog,
+    updateDog,
+    setEditing
+  } = props;
+
   const [values, setValues] = useState(initialForm);
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchBreeds();
+    if (editing) {
+      const { name, breed, adopted } = dog;
+      setValues({ name, breed, adopted })
+    }
   }, []);
 
   const onSubmit = (event) => {
     event.preventDefault();
+    if (editing) {
+      updateDog(dog.id, { ...values });
+      setEditing(false);
+    } else {
+      createDog({ ...values });
+    }
+    navigate('/');
   }
   const onChange = (event) => {
     const { name, value, type, checked } = event.target
@@ -20,11 +42,11 @@ export default function DogForm(props) {
       ...values, [name]: type === 'checkbox' ? checked : value
     });
   }
-  
+
   return (
     <div>
       <h2>
-        Create Dog
+        {editing ? 'Update Dog' : 'Create Dog'}
       </h2>
       <form onSubmit={onSubmit}>
         <input
@@ -58,7 +80,7 @@ export default function DogForm(props) {
         </label>
         <div>
           <button type="submit">
-            Create Dog
+            {editing ? 'Update Dog' : 'Create Dog'}
           </button>
           <button aria-label="Reset form">Reset</button>
         </div>
