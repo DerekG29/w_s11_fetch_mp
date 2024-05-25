@@ -42,6 +42,10 @@ export default function DogForm(props) {
       ...values, [name]: type === 'checkbox' ? checked : value
     });
   }
+  const resetForm = () => {
+    setEditing(false);
+    setValues(initialForm);
+  }
 
   return (
     <div>
@@ -82,7 +86,9 @@ export default function DogForm(props) {
           <button type="submit">
             {editing ? 'Update Dog' : 'Create Dog'}
           </button>
-          <button aria-label="Reset form">Reset</button>
+          <button aria-label="Reset form" type="reset" onClick={resetForm}>
+            Reset
+          </button>
         </div>
       </form>
     </div>
